@@ -46,8 +46,8 @@ public class PlayerCombat : MonoBehaviour
     [Tooltip("Layers representing damageable targets (e.g., Maya, Enemies).")]
     [SerializeField] private LayerMask enemyLayers;
 
-    [Tooltip("Tags treated as valid enemy targets (e.g., 'MAYA', 'Enemy').")]
-    [SerializeField] private string[] targetTags = new string[] { "MAYA", "Enemy" };
+    [Tooltip("Tags treated as valid enemy targets (e.g., 'MAYA', 'Enemy', 'TrainingTarget').")]
+    [SerializeField] private string[] targetTags = new string[] { "MAYA", "Enemy", "TrainingTarget" };
 
     [Header("Combat Mechanics & Movement")]
     [Tooltip("Whether player movement pauses briefly during attack swings.")]
@@ -146,6 +146,12 @@ public class PlayerCombat : MonoBehaviour
     {
         nextBasicAttackTime = Time.time + basicAttackCooldown;
 
+        // Record telemetry
+        if (PlayerPerformanceTracker.Instance != null)
+        {
+            PlayerPerformanceTracker.Instance.RecordAttackFired(false);
+        }
+
         // Trigger animation
         if (animator != null && !string.IsNullOrEmpty(basicAttackTrigger))
         {
@@ -172,6 +178,12 @@ public class PlayerCombat : MonoBehaviour
     private void PerformPowerStrike()
     {
         nextPowerStrikeTime = Time.time + powerStrikeCooldown;
+
+        // Record telemetry
+        if (PlayerPerformanceTracker.Instance != null)
+        {
+            PlayerPerformanceTracker.Instance.RecordAttackFired(true);
+        }
 
         // Trigger animation
         if (animator != null && !string.IsNullOrEmpty(powerStrikeTrigger))

@@ -112,6 +112,12 @@ public class Health : MonoBehaviour, IDamageable
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
         OnDamageTaken?.Invoke(amount);
 
+        // Record telemetry if player takes damage
+        if (CompareTag("Player") && PlayerPerformanceTracker.Instance != null)
+        {
+            PlayerPerformanceTracker.Instance.RecordDamageTaken(amount);
+        }
+
         // Apply knockback if available
         if (canReceiveKnockback && knockbackForce > 0f && rb != null && !rb.isKinematic)
         {
